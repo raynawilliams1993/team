@@ -67,6 +67,9 @@ function roleSelection(data) {
     myTeam.push(new selectClass(data.name, data.id, data.email, answers.unique))
     console.log(myTeam);
   });
+  render(Employee) {
+    
+  }
 }
 init();
 // Write code to use inquirer to gather information about the development team members,
