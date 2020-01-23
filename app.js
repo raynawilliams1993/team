@@ -12,64 +12,85 @@ const render = require("./lib/htmlRenderer");
 
 function init() {
   inquirer
-  .prompt([ 
-    { 
-      type : "input",
-      message : "What is your name?",
-      name : "name",
-    },
-    { 
-      type : "input",
-      message : "What is your id?",
-      name : "id",
-    },
-    { 
-      type : "input",
-      message : "What is your email?",
-      name : "email",
-    },
-    { 
-      type : "list",
-      message : "What is your role?",
-      name : "role",
-      choices : ["Manager","Engineer","Intern"],
-    },
+    .prompt([
+      {
+        type: "input",
+        message: "What is your name?",
+        name: "name",
+      },
+      {
+        type: "input",
+        message: "What is your id?",
+        name: "id",
+      },
+      {
+        type: "input",
+        message: "What is your email?",
+        name: "email",
+      },
+      {
+        type: "list",
+        message: "What is your role?",
+        name: "role",
+        choices: ["Manager", "Engineer", "Intern"],
+      },
 
-  ])
-  .then(answers => {
-    roleSelection(answers);
-  });
+    ])
+    .then(answers => {
+      roleSelection(answers);
+    });
 }
 function roleSelection(data) {
   let role = data.role;
   let selectClass;
-  if(role === "Manager") {
+  if (role === "Manager") {
     role = "Office Number"
     selectClass = Manager
-  }else if (role === "Engineer") {
+  } else if (role === "Engineer") {
     role = "Github Username"
     selectClass = Engineer
-  }else {
+  } else {
     role = "School"
     selectClass = Intern
-  } 
-  inquirer
-  .prompt([
-    /* Pass your questions in here */
-    { 
-      type : "input",
-      message : "Enter your " + role,
-      name : "unique",
-    },
-  ])
-  .then(answers => {
-    // Use user feedback for... whatever!!
-    myTeam.push(new selectClass(data.name, data.id, data.email, answers.unique))
-    console.log(myTeam);
-  });
-  render(Employee) {
-    
   }
+  inquirer
+    .prompt([
+      /* Pass your questions in here */
+      {
+        type: "input",
+        message: "Enter your " + role,
+        name: "unique",
+      },
+    ])
+    .then(answers => {
+      // Use user feedback for... whatever!!
+      myTeam.push(new selectClass(data.name, data.id, data.email, answers.unique))
+      additionalTeamMember();
+    });
+
+}
+function additionalTeamMember() {
+  inquirer
+    .prompt([
+      /* Pass your questions in here */
+      {
+        type: "list",
+        message: "Do you want to add another team member?",
+        name: "choice",
+        choices: ["yes", "no"],
+      },
+    ])
+    .then(answers => {
+      if (answers.choice === "yes") {
+        init();
+      } else {
+        var result = render(myTeam)
+        fs.writeFile("./output/index.html", result,(error,data)=>{
+          if (error) throw error;
+        })
+        console.log(result);
+      }
+    });
 }
 init();
 // Write code to use inquirer to gather information about the development team members,
